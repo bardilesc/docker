@@ -1,0 +1,36 @@
+version: "3"
+services:
+  wpsitedb:
+    container_name: wp_site_DB
+    restart: unless-stopped
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: wordpress
+      MYSQL_DATABASE: wp_database
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    ports:
+      - 33060:33060
+    volumes:
+      - ./var/lib/mysql:/var/lib/mysql
+  wpsitefront:
+    container_name: wp_site_FRONT
+    restart: unless-stopped
+    image: wordpress:6
+    ports:
+      - 8070:80
+    environment:
+      WORDPRESS_DB_HOST: wpsitedb
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wp_database
+    volumes:
+      # create directory
+      - ./var/www/html:/var/www/html
+      - ./apache_conf/apache2.conf:/etc/apache2/apache2.conf
+    depends_on:
+      - wpsitedb
+networks:
+   default:
+     external:
+       name: nginx_px_npm
