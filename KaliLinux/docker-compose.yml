@@ -1,0 +1,34 @@
+version: '3'
+services:
+  machine1:
+    image: kalilinux/kali-rolling
+    container_name: kali-machine1
+    command: tail -f /dev/null
+    volumes:
+      - kali1:/data
+    networks:
+      kali-network:
+        ipv4_address: 172.20.0.2
+    ports:
+        - "6666:6666"
+        - "2222:2222"
+        - "3389:3389"
+  machine2:
+    image: kalilinux/kali-rolling
+    container_name: kali-machine2
+    command: tail -f /dev/null
+    volumes:
+      - kali2:/data/
+    networks:
+      kali-network:
+        ipv4_address: 172.20.0.3
+networks:
+  kali-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16
+volumes:
+  kali1:
+  kali2:
